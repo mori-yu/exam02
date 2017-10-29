@@ -12,12 +12,12 @@ NULLCMD = :
 #### Start of system configuration section. ####
 
 srcdir = .
-topdir = /Users/hiratakoya/.rbenv/versions/2.3.0/include/ruby-2.3.0
+topdir = /usr/local/rvm/rubies/ruby-2.3.0/include/ruby-2.3.0
 hdrdir = $(topdir)
-arch_hdrdir = /Users/hiratakoya/.rbenv/versions/2.3.0/include/ruby-2.3.0/x86_64-darwin16
+arch_hdrdir = /usr/local/rvm/rubies/ruby-2.3.0/include/ruby-2.3.0/x86_64-linux
 PATH_SEPARATOR = :
 VPATH = $(srcdir):$(arch_hdrdir)/ruby:$(hdrdir)/ruby
-prefix = $(DESTDIR)/Users/hiratakoya/.rbenv/versions/2.3.0
+prefix = $(DESTDIR)/usr/local/rvm/rubies/ruby-2.3.0
 rubysitearchprefix = $(rubylibprefix)/$(sitearch)
 rubyarchprefix = $(rubylibprefix)/$(arch)
 rubylibprefix = $(libdir)/$(RUBY_BASE_NAME)
@@ -31,8 +31,8 @@ rubyhdrdir = $(includedir)/$(RUBY_VERSION_NAME)
 vendorarchdir = $(vendorlibdir)/$(sitearch)
 vendorlibdir = $(vendordir)/$(ruby_version)
 vendordir = $(rubylibprefix)/vendor_ruby
-sitearchdir = $(DESTDIR)./.gem.20170821-16361-1p5l377
-sitelibdir = $(DESTDIR)./.gem.20170821-16361-1p5l377
+sitearchdir = $(DESTDIR)./.gem.20171029-14820-1hoj2nb
+sitelibdir = $(DESTDIR)./.gem.20171029-14820-1hoj2nb
 sitedir = $(rubylibprefix)/site_ruby
 rubyarchdir = $(rubylibdir)/$(arch)
 rubylibdir = $(rubylibprefix)/$(ruby_version)
@@ -51,10 +51,10 @@ htmldir = $(docdir)
 infodir = $(datarootdir)/info
 docdir = $(datarootdir)/doc/$(PACKAGE)
 oldincludedir = $(DESTDIR)/usr/include
-includedir = $(SDKROOT)$(prefix)/include
+includedir = $(prefix)/include
 localstatedir = $(prefix)/var
 sharedstatedir = $(prefix)/com
-sysconfdir = $(prefix)/etc
+sysconfdir = $(DESTDIR)/etc
 datadir = $(datarootdir)
 datarootdir = $(prefix)/share
 libexecdir = $(exec_prefix)/libexec
@@ -63,12 +63,12 @@ bindir = $(exec_prefix)/bin
 archdir = $(rubyarchdir)
 
 
-CC = clang
-CXX = clang++
-LIBRUBY = $(LIBRUBY_A)
+CC = gcc
+CXX = g++
+LIBRUBY = $(LIBRUBY_SO)
 LIBRUBY_A = lib$(RUBY_SO_NAME)-static.a
-LIBRUBYARG_SHARED = 
-LIBRUBYARG_STATIC = -l$(RUBY_SO_NAME)-static -framework CoreFoundation
+LIBRUBYARG_SHARED = -Wl,-rpath,'$${ORIGIN}/../lib' -Wl,-R'$${ORIGIN}/../lib' -l$(RUBY_SO_NAME)
+LIBRUBYARG_STATIC = -Wl,-rpath,'$${ORIGIN}/../lib' -Wl,-R'$${ORIGIN}/../lib' -l$(RUBY_SO_NAME)-static
 empty =
 OUTFLAG = -o $(empty)
 COUTFLAG = -o $(empty)
@@ -79,18 +79,18 @@ cxxflags =  $(optflags) $(debugflags) $(warnflags)
 optflags = -O3 -fno-fast-math
 debugflags = -ggdb3
 warnflags = 
-CCDLFLAGS = -fno-common
-CFLAGS   = $(CCDLFLAGS)  -O3 -Wno-error=shorten-64-to-32  -pipe $(ARCH_FLAG)
-INCFLAGS = -I. -I$(arch_hdrdir) -I$(hdrdir)/ruby/backward -I$(hdrdir) -I$(srcdir)
+CCDLFLAGS = -fPIC
+CFLAGS   = $(CCDLFLAGS) $(cflags)  -fPIC  $(ARCH_FLAG)
+INCFLAGS = -I. -I$(arch_hdrdir) -I$(hdrdir)/ruby/backward -I$(hdrdir) -I$(srcdir) 
 DEFS     = 
-CPPFLAGS = -DRUBY_EXTCONF_H=\"$(RUBY_EXTCONF_H)\" -I/Users/hiratakoya/.rbenv/versions/2.3.0/include  -D_XOPEN_SOURCE -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT -D_REENTRANT $(DEFS) $(cppflags)
-CXXFLAGS = $(CCDLFLAGS) $(cxxflags) $(ARCH_FLAG)
-ldflags  = -L. -L/Users/hiratakoya/.rbenv/versions/2.3.0/lib  -fstack-protector
-dldflags = -Wl,-undefined,dynamic_lookup -Wl,-multiply_defined,suppress 
+CPPFLAGS = -DRUBY_EXTCONF_H=\"$(RUBY_EXTCONF_H)\"  $(DEFS) $(cppflags)
+CXXFLAGS = $(CCDLFLAGS) $(cxxflags)  $(ARCH_FLAG)
+ldflags  = -L. -fstack-protector -rdynamic -Wl,-export-dynamic 
+dldflags =  
 ARCH_FLAG = 
 DLDFLAGS = $(ldflags) $(dldflags) $(ARCH_FLAG)
-LDSHARED = $(CC) -dynamic -bundle
-LDSHAREDXX = $(CXX) -dynamic -bundle
+LDSHARED = $(CC) -shared
+LDSHAREDXX = $(CXX) -shared
 AR = ar
 EXEEXT = 
 
@@ -101,7 +101,7 @@ RUBY_VERSION_NAME = $(RUBY_BASE_NAME)-$(ruby_version)
 RUBYW_BASE_NAME = rubyw
 RUBY_BASE_NAME = ruby
 
-arch = x86_64-darwin16
+arch = x86_64-linux
 sitearch = $(arch)
 ruby_version = 2.3.0
 ruby = $(bindir)/$(RUBY_BASE_NAME)
@@ -110,9 +110,9 @@ ruby_headers = $(hdrdir)/ruby.h $(hdrdir)/ruby/ruby.h $(hdrdir)/ruby/defines.h $
 
 RM = rm -f
 RM_RF = $(RUBY) -run -e rm -- -rf
-RMDIRS = rmdir -p
-MAKEDIRS = mkdir -p
-INSTALL = /usr/bin/install -c
+RMDIRS = rmdir --ignore-fail-on-non-empty -p
+MAKEDIRS = /bin/mkdir -p
+INSTALL = /usr/bin/install
 INSTALL_PROG = $(INSTALL) -m 0755
 INSTALL_DATA = $(INSTALL) -m 644
 COPY = cp
@@ -123,7 +123,7 @@ TOUCH = exit >
 preload = 
 
 libpath = . $(libdir)
-LIBPATH =  -L. -L$(libdir)
+LIBPATH =  -L. -L$(libdir) -Wl,-R$(libdir)
 DEFFILE = 
 
 CLEANFILES = mkmf.log
@@ -134,15 +134,15 @@ extout =
 extout_prefix = 
 target_prefix = 
 LOCAL_LIBS = 
-LIBS =   -lpthread -ldl -lobjc 
-ORIG_SRCS = AbstractMemory.c ArrayType.c Buffer.c Call.c ClosurePool.c DataConverter.c DynamicLibrary.c ffi.c Function.c FunctionInfo.c LastError.c LongDouble.c MappedType.c MemoryPointer.c MethodHandle.c Platform.c Pointer.c Struct.c StructByReference.c StructByValue.c StructLayout.c Thread.c Type.c Types.c Variadic.c
+LIBS = $(LIBRUBYARG_SHARED) -lffi  -lffi -lpthread -lgmp -ldl -lcrypt -lm   -lc
+ORIG_SRCS = DataConverter.c Type.c FunctionInfo.c ffi.c StructByReference.c AbstractMemory.c Call.c ClosurePool.c Types.c StructByValue.c Thread.c Function.c DynamicLibrary.c LastError.c MemoryPointer.c Variadic.c MethodHandle.c StructLayout.c Struct.c Pointer.c Platform.c Buffer.c LongDouble.c MappedType.c ArrayType.c
 SRCS = $(ORIG_SRCS) 
-OBJS = AbstractMemory.o ArrayType.o Buffer.o Call.o ClosurePool.o DataConverter.o DynamicLibrary.o ffi.o Function.o FunctionInfo.o LastError.o LongDouble.o MappedType.o MemoryPointer.o MethodHandle.o Platform.o Pointer.o Struct.o StructByReference.o StructByValue.o StructLayout.o Thread.o Type.o Types.o Variadic.o
-HDRS = $(srcdir)/AbstractMemory.h $(srcdir)/ArrayType.h $(srcdir)/Call.h $(srcdir)/ClosurePool.h $(srcdir)/compat.h $(srcdir)/DynamicLibrary.h $(srcdir)/extconf.h $(srcdir)/Function.h $(srcdir)/LastError.h $(srcdir)/LongDouble.h $(srcdir)/MappedType.h $(srcdir)/MemoryPointer.h $(srcdir)/MethodHandle.h $(srcdir)/Platform.h $(srcdir)/Pointer.h $(srcdir)/rbffi.h $(srcdir)/rbffi_endian.h $(srcdir)/Struct.h $(srcdir)/StructByReference.h $(srcdir)/StructByValue.h $(srcdir)/Thread.h $(srcdir)/Type.h $(srcdir)/Types.h
+OBJS = DataConverter.o Type.o FunctionInfo.o ffi.o StructByReference.o AbstractMemory.o Call.o ClosurePool.o Types.o StructByValue.o Thread.o Function.o DynamicLibrary.o LastError.o MemoryPointer.o Variadic.o MethodHandle.o StructLayout.o Struct.o Pointer.o Platform.o Buffer.o LongDouble.o MappedType.o ArrayType.o
+HDRS = $(srcdir)/Struct.h $(srcdir)/StructByReference.h $(srcdir)/Types.h $(srcdir)/StructByValue.h $(srcdir)/MappedType.h $(srcdir)/DynamicLibrary.h $(srcdir)/rbffi_endian.h $(srcdir)/MemoryPointer.h $(srcdir)/ArrayType.h $(srcdir)/Pointer.h $(srcdir)/LongDouble.h $(srcdir)/rbffi.h $(srcdir)/Call.h $(srcdir)/Platform.h $(srcdir)/Thread.h $(srcdir)/LastError.h $(srcdir)/ClosurePool.h $(srcdir)/extconf.h $(srcdir)/AbstractMemory.h $(srcdir)/Type.h $(srcdir)/compat.h $(srcdir)/MethodHandle.h $(srcdir)/Function.h
 TARGET = ffi_c
 TARGET_NAME = ffi_c
 TARGET_ENTRY = Init_$(TARGET_NAME)
-DLLIB = $(TARGET).bundle
+DLLIB = $(TARGET).so
 EXTSTATIC = 
 STATIC_LIB = 
 
@@ -155,7 +155,7 @@ HDRDIR        = $(rubyhdrdir)/ruby$(target_prefix)
 ARCHHDRDIR    = $(rubyhdrdir)/$(arch)/ruby$(target_prefix)
 
 TARGET_SO     = $(DLLIB)
-CLEANLIBS     = $(TARGET).bundle 
+CLEANLIBS     = $(TARGET).so 
 CLEANOBJS     = *.o  *.bak
 
 all:    $(DLLIB)
@@ -254,10 +254,7 @@ $(DLLIB): $(OBJS) Makefile
 	$(ECHO) linking shared-object $(DLLIB)
 	-$(Q)$(RM) $(@)
 	$(Q) $(LDSHARED) -o $@ $(OBJS) $(LIBPATH) $(DLDFLAGS) $(LOCAL_LIBS) $(LIBS)
-	$(Q) $(POSTLINK)
 
 
 
 $(OBJS): $(HDRS) $(ruby_headers)
-LIBFFI_HOST=--host=
-include ${srcdir}/libffi.darwin.mk
