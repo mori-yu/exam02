@@ -1,0 +1,32 @@
+body {
+  background-color: #f0f0f0;
+}
+
+img{
+  max-width: 100%;
+}
+
+.picture {
+  background-color: white;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.save_picture {
+  display: block;
+  margin-left: auto;
+}
+
+.navbar-default .container-fluid .navbar-header > a {
+  color: black;
+}
+
+.navbar .navbar-nav {
+  display: inline-block;
+  float: none;
+  vertical-align: top;
+}
+
+.navbar .navbar-collapse {
+  text-align: center;
+}

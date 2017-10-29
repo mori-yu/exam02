@@ -1,0 +1,18 @@
+<% @pictures.each do |picture| %>
+
+  <div class="row picture">
+    <div class="avatar">
+      <%= show_avatar(picture.user) if show_avatar(picture.user) %>
+      <%= picture.user.name%>さんが投稿しました
+    </div>
+    
+    <%= show_image(picture) if show_image(picture) %>
+    <%= simple_format(picture.description) %>
+
+    <!-- 対象のパスへ移動する際に id を指定すると
+    これだけで移動できる -->
+    <%= link_to "編集", edit_picture_path(picture.id), class: "btn btn-default btn-sm btn-success" %>
+    <%= link_to "削除", picture_path(picture.id), method: :delete, data: { confirm: "本当に削除しますか？"}, class: "btn btn-default btn-sm btn btn-danger" %>
+  </div>
+
+<% end %>

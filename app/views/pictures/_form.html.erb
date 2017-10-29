@@ -1,0 +1,28 @@
+<!-- フラッシュメッセージ -->
+<%= render "flash" %>
+
+<!-- エラーがあった際はその内容を表示させる -->
+  <% if @errors %>
+    <div id="error_explanation">
+      <h2><%= @errors.count %>件のエラーがあります。</h2>
+      <ul>
+        <% @errors.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<%= form_for(@picture, url: choose_new_or_edit) do |f| %>
+
+  <%= show_image(@picture) %>
+  <%= f.file_field :image %>
+  <br>
+
+  <%= f.label :description %>
+  <%= f.text_area :description, class: "form-control" %>
+
+  <%= f.submit "投稿", class: "save_picture btn btn-primary" %>
+<% end %>
+
+<%= link_to "戻る", pictures_path %>
